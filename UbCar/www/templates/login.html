@@ -1,0 +1,35 @@
+<ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">S'identifier</h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeLogin()">Fermer</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+
+    <div class="row">
+      <form ng-submit="doLogin()">
+        <div class="row">
+          <div class="input-field col s6">
+            <i class="mdi-action-account-circle prefix"></i>
+            <input id="icon_email" type="email" class="validate" ng-model="loginData.username">
+            <label for="icon_email">email</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s6">
+            <i class="mdi-action-lock prefix"></i>
+            <input id="icon_password" type="password" class="validate" ng-model="loginData.password">
+            <label for="icon_password">mot de passe</label>
+          </div>
+        </div>      
+        <div id="btnSubmitLogin" >
+          <button class="btn-large waves-effect waves-light light-blue" type="submit">
+            <i class="mdi-action-input"></i>
+          </button>
+        </div>       
+      </form>
+    </div>
+        
+  </ion-content>
+</ion-modal-view>

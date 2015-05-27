@@ -1,0 +1,54 @@
+<ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">Nouveau profil <i class="icon ion-edit"></i></h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeProfilAdd()">Fermer</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+
+      <div class="row">
+          <form class="col s12" ng-submit="addProfil()">
+            <div class="row">
+              <div class="input-field col s6">
+                <i class="mdi-action-account-circle prefix"></i>
+                <input id="first_name" type="text" class="validate" ng-model="profil.nom">
+                <label for="first_name">Prénom</label>
+              </div>
+              <div class="input-field col s6">
+                <input id="last_name" type="text" class="validate" ng-model="profil.prenom">
+                <label for="last_name">Nom</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s6">
+                <i class="mdi-action-home prefix"></i>
+                <input id="ville" type="text" class="validate" ng-model="profil.ville">
+                <label for="ville">Ville</label>
+              </div>
+            </div>
+            <div class="nbPlace">
+                <label id="labelNbPlace">Nombre de place : {{profil.place}}</label>
+                <div class="item range range-positive">
+                  <i class="icon ion-android-car"></i>
+                  <input type="range" name="nombrePlace" min="1" max="7" value="3" ng-model="profil.place">
+                  <i class="icon ion-model-s"></i>
+                </div>
+              </div>
+            <div class="row">
+              <div class="input-field col s12">
+                <i class="mdi-communication-quick-contacts-mail prefix"></i>
+                <input id="email" type="email" class="validate">
+                <label for="email">Email</label>
+              </div>
+            </div>
+            <label>
+                <button class="button button-block button-positive" type="submit"> 
+                  <i class="mdi-action-thumb-up"></i>
+                </button>
+              </label>
+          </form>
+      </div>
+
+  </ion-content>
+</ion-modal-view>

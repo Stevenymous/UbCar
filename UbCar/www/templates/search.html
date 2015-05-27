@@ -1,0 +1,44 @@
+<ion-view view-title="Rechercher un trajet">
+  <ion-content>
+	<div class="list">
+
+		<div class="switch">
+			<label id="labelGeolocalisation">
+			  <i class="mdi-device-gps-not-fixed"></i>
+			  <input type="checkbox">
+			  <span class="lever"></span>
+			  <i class="mdi-device-gps-fixed"></i>
+			</label>
+		</div>
+
+		<label class="item item-input item-floating-label">
+			<span class="input-label">
+				<a class="icon ion-location balanced"></a> Ville de départ
+			</span>
+			<input type="text" placeholder="De" ng-model="searchtrajet.depart">
+		</label>
+		<label class="item item-input item-floating-label">
+			<span class="input-label">
+				<a class="icon ion-location assertive"></a> Ville d'arrivée
+			</span>
+			<input type="text" placeholder="A" ng-model="searchtrajet.arrivee">
+		</label>
+		<label class="item item-input item-floating-label">
+			<span class="input-label">
+				<a class="icon ion-calendar"></a> Date</span>
+			<input type="text" placeholder="Date" ng-model="searchtrajet.date">
+		</label>
+		<!-- Via la fonction du téléphone-->
+		<label class="item item-input">
+			<input type="date" placeholder="Date" ng-model="searchtrajet.date">
+		</label>
+
+		<label class="item">
+			<button class="button button-block button-energized" type="submit"> 
+			  <i class="ion-ios-search-strong"></i>
+			</button>
+        </label>
+
+	</div>
+  </ion-content>
+</ion-view>
