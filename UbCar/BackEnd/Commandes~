@@ -1,5 +1,0 @@
-Create a new app: sails new testProject
-
-lancer serveur : sails lift
-
-test : http://localhost:1337/
