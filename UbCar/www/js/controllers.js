@@ -51,7 +51,7 @@ angular.module('starter.controllers', [])
   };
 
   $scope.addProfil = function() {
-    //console.log('Doing profil', $scope.profil);
+    console.log('Doing profil', $scope.profil);
 
     $timeout(function() {
       $scope.closeProfilAdd();
@@ -60,8 +60,22 @@ angular.module('starter.controllers', [])
 })
 
 .controller('SearchCtrl', function($scope, $stateParams) {
-   $scope.searchtrajet = {};
- })
+    $scope.searchtrajet = {};
+   
+    $scope.geolocalisation = function(position) {
+      console.log('geoloc');
+
+      navigator.geolocation.getCurrentPosition(onSuccess, onError);
+      function onSuccess(position) {
+        console.log("latitude", position.coords.latitude);
+        console.log("longitude", position.coords.longitude);
+      };
+      function onError() {
+        console.log("Ca mache pas!!!");
+      }
+
+    };
+})
 
 //.controller('SearchCtrl', function($scope, $cordovaGeolocation) {
 ////Partie géolocalisation
