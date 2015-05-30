@@ -63,60 +63,35 @@ angular.module('starter.controllers', [])
     $scope.searchtrajet = {};
    
     $scope.geolocalisation = function(position) {
-      console.log('geoloc');
 
       navigator.geolocation.getCurrentPosition(onSuccess, onError);
-      function onSuccess(position) {
-        console.log("latitude", position.coords.latitude);
-        console.log("longitude", position.coords.longitude);
-      };
-      function onError() {
-        console.log("Ca mache pas!!!");
-      }
 
+        function onSuccess(position) {
+          var latitude = position.coords.latitude;
+          var longitude = position.coords.longitude;
+          var latlng = new google.maps.LatLng(latitude, longitude);
+
+          var geocoder = new google.maps.Geocoder();
+
+          geocoder.geocode({'latLng': latlng}, function(results, status) {
+          
+            if (status == google.maps.GeocoderStatus.OK) {
+              if (results[1]) {
+                var villeDepart = results[1].formatted_address;
+                $scope.searchtrajet.depart = villeDepart; //N'est pas passé à la vue du premier coup RIP! (problème d'appel asynchrone)
+              } else { alert('No results found');}
+            } else { alert('Geocoder failed due to: ' + status); }
+
+          });
+        };
+
+        function onError(error) {
+          alert("Erreur lors de la géolocalisation", error.code);
+        };
     };
+   
 })
 
-//.controller('SearchCtrl', function($scope, $cordovaGeolocation) {
-////Partie géolocalisation
-//  var posOptions = {timeout: 10000, enableHighAccuracy: false};
-//  $cordovaGeolocation
-//    .getCurrentPosition(posOptions)
-//    .then(function (position) {
-//      var lat  = position.coords.latitude
-//      var long = position.coords.longitude
-//    }, function(err) {
-//      // error
-//    });
-//
-//
-//  var watchOptions = {
-//    frequency : 1000,
-//    timeout : 3000,
-//    enableHighAccuracy: false
-//  };
-//
-//  var watch = $cordovaGeolocation.watchPosition(watchOptions);
-//  watch.then(
-//    null,
-//    function(err) {
-//      // error
-//    },
-//    function(position) {
-//      var lat  = position.coords.latitude
-//      var long = position.coords.longitude
-//  });
-//
-//
-//  watch.clearWatch();
-//  // OR
-//  $cordovaGeolocation.clearWatch(watch)
-//    .then(function(result) {
-//      // success
-//      }, function (error) {
-//      // error
-//    });
-//})
 
 .controller('AddTrajetCtrl', function($scope, $stateParams) {
   $scope.addtrajet = {};
