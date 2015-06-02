@@ -33,7 +33,7 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('ProfilCtrl', function($scope, $ionicModal, $timeout) {
+.controller('ProfilCtrl', function($scope, $ionicModal, $timeout, $ionicPopup) {
   $scope.profil = {};
 
   $ionicModal.fromTemplateUrl('templates/profilAdd.html', {
@@ -57,6 +57,46 @@ angular.module('starter.controllers', [])
       $scope.closeProfilAdd();
     }, 1000);
   };
+
+  $scope.modalProfilDelete = function() {
+   var confirmPopup = $ionicPopup.confirm({
+     title: 'Suppression de profil',
+     template: 'Etes-vous sûr de vouloir supprimer votre profil?',
+     cssClass: '.popup-container',
+     buttons: [
+      { text: 'Non' },
+      {
+        text: '<b>Je le veux!</b>',
+        type: 'button-positive',
+      }]
+   });
+   confirmPopup.then(function(res) {
+     if(res) {
+       console.log('You are sure');
+     } else {
+       console.log('You are not sure');
+     }
+   });
+  };
+
+
+  //Partie camera
+  $scope.takePicture = function(position) {
+    navigator.camera.getPicture(onSuccess, onFail, { quality: 50,
+        destinationType: Camera.DestinationType.DATA_URL
+    });
+    
+    function onSuccess(imageData) {
+        var image = document.getElementById('myImage');
+        image.src = "data:image/jpeg;base64," + imageData;
+    }
+    
+    function onFail(message) {
+        alert('Failed because: ' + message);
+    }
+    
+  }
+  
 })
 
 .controller('SearchCtrl', function($scope, $stateParams) {

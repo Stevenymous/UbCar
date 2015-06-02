@@ -90,7 +90,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 //    }
 //  });
 
-//Ajouter un trajet
+//Documentation de l'application
   .state('app.documentation', {
     url: "/documentation",
     views: {

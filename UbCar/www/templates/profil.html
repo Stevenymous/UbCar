@@ -4,6 +4,12 @@
     <button class="btn-large waves-effect waves-light green accent-3" ng-click="modalProfilAdd()">
       <i class="mdi-social-person-add"></i>
     </button>
+    <button class="btn-large waves-effect waves-light grey darken-1" ng-click="modalProfilModify()">
+      <i class="mdi-content-create"></i>
+    </button>
+    <button class="btn-large waves-effect waves-light orange darken-4" ng-click="modalProfilDelete()">
+      <i class="mdi-action-delete"></i>
+    </button>
 
     <h1>
       <i class="mdi-social-mood"></i>
@@ -11,15 +17,9 @@
       {{profil.nom}} nom
     </h1>
 
-    <form action="#">
-        <div class="file-field input-field">
-          <input class="file-path validate" type="text"/>
-          <div class="btn">
-            <span><i class="mdi-social-party-mode"></i></span>
-            <input type="file" />
-          </div>
-        </div>
-    </form>
+     <button class="btn-large waves-effect waves-light teal darken-2" ng-click="takePicture()">
+      <i class="mdi-social-party-mode"></i>
+    </button>
 
     <div id="divFicheProfil">
       <div class="row">
