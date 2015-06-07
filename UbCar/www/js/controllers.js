@@ -1,27 +1,22 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
-  // Form data for the login modal
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, UbCarService) {
   $scope.loginData = {};
 
-  // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
     scope: $scope
   }).then(function(modal) {
     $scope.modal = modal;
   });
 
-  // Triggered in the login modal to close it
   $scope.closeLogin = function() {
     $scope.modal.hide();
   };
 
-  // Open the login modal
   $scope.login = function() {
     $scope.modal.show();
   };
 
-  // Perform the login action when the user submits the login form
   $scope.doLogin = function() {
     console.log('Doing login', $scope.loginData);
 
@@ -31,9 +26,10 @@ angular.module('starter.controllers', [])
       $scope.closeLogin();
     }, 1000);
   };
+
 })
 
-.controller('ProfilCtrl', function($scope, $ionicModal, $timeout, $ionicPopup) {
+.controller('ProfilCtrl', function($scope, $ionicModal, $timeout, $ionicPopup, $http) {
   $scope.profil = {};
 
   $ionicModal.fromTemplateUrl('templates/profilAdd.html', {
@@ -41,6 +37,19 @@ angular.module('starter.controllers', [])
   }).then(function(modal) {
     $scope.modal = modal;
   });
+//Chargement de la fiche profil
+  $http.get('http://localhost:1337/user/')
+    .success(function(data, status, headers,config){
+      console.log('data success');
+      console.log(data);
+      $scope.profil = data[0];
+    })
+    .error(function(data, status, headers, config){
+      var alertPopup = $ionicPopup.alert({
+      title: 'Ooooops!',
+      template: 'Votre profil n\'a pas été trouvé'
+      });
+    });
 
   $scope.closeProfilAdd = function() {
     $scope.modal.hide();
@@ -51,32 +60,38 @@ angular.module('starter.controllers', [])
   };
 
   $scope.addProfil = function() {
+    //$scope.profil = {};
     console.log('Doing profil', $scope.profil);
 
-    $timeout(function() {
-      $scope.closeProfilAdd();
-    }, 1000);
+    var post = $scope.profil;
+    console.log(post);
+
+    //$timeout(function() {
+    //  $scope.closeProfilAdd();
+    //}, 1000);
   };
 
   $scope.modalProfilDelete = function() {
    var confirmPopup = $ionicPopup.confirm({
-     title: 'Suppression de profil',
-     template: 'Etes-vous sûr de vouloir supprimer votre profil?',
-     cssClass: '.popup-container',
-     buttons: [
-      { text: 'Non' },
+    title: 'Suppression de profil',
+    template: 'Etes-vous sûr de vouloir supprimer votre profil?',
+    cssClass: '.popup-container',
+    buttons: [
+      { 
+        text: 'Non',
+        onTap: function(event) {
+          confirmPopup.close();
+        } 
+      },
       {
         text: '<b>Je le veux!</b>',
         type: 'button-positive',
-      }]
-   });
-   confirmPopup.then(function(res) {
-     if(res) {
-       console.log('You are sure');
-     } else {
-       console.log('You are not sure');
-     }
-   });
+        onTap: function(event) {
+          console.log('You are sure');
+        } 
+      }
+    ]
+   })
   };
 
 
@@ -92,9 +107,11 @@ angular.module('starter.controllers', [])
     }
     
     function onFail(message) {
-        alert('Failed because: ' + message);
+      var alertPopup = $ionicPopup.alert({
+        title: 'Ooooops!',
+        template: 'Une erreur est survenue'
+      });
     }
-    
   }
   
 })
@@ -119,14 +136,26 @@ angular.module('starter.controllers', [])
               if (results[1]) {
                 var villeDepart = results[1].formatted_address;
                 $scope.searchtrajet.depart = villeDepart; //N'est pas passé à la vue du premier coup RIP! (problème d'appel asynchrone)
-              } else { alert('No results found');}
-            } else { alert('Geocoder failed due to: ' + status); }
-
+              } else {
+                var alertPopup1 = $ionicPopup.alert({
+                  title: 'Ooooops!',
+                  template: 'Aucun résultat ne coorespond à votre recherche'
+                });
+              }
+            } else {
+              var alertPopup2 = $ionicPopup.alert({
+                  title: 'Ooooops!',
+                  template: 'Geocoder a eu un problème d\'éxecution'
+                });
+            }
           });
         };
 
         function onError(error) {
-          alert("Erreur lors de la géolocalisation", error.code);
+          var alertPopup = $ionicPopup.alert({
+            title: 'Ooooops!',
+            template: 'Une erreur est survenue lors de la géolocalisation'
+          });
         };
     };
    
@@ -135,6 +164,21 @@ angular.module('starter.controllers', [])
 
 .controller('AddTrajetCtrl', function($scope, $stateParams) {
   $scope.addtrajet = {};
+})
+
+.controller('UsersCtrl', function($scope, $http) {
+  var urlApi = 'http://localhost:1337/user/';
+
+  $http.get('http://localhost:1337/user/')
+      .success(function(data, status, headers,config){
+        console.log('data success');
+        console.log(data);
+      })
+      .error(function(data, status, headers, config){
+        console.log('data error ' + status);
+      })
+
+
 })
 
 
