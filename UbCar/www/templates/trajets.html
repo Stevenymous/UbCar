@@ -1,0 +1,12 @@
+<ion-view title="Trajets disponibles">
+  <ion-nav-buttons side="left">
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+  <ion-content class="has-header">
+    <ion-list>
+      <ion-item ng-repeat="trajet in trajets | orderBy:'name'" href="#/app/trajets/{{trajet.id}}">
+        {{trajet.name}}
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
