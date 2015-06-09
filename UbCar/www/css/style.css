@@ -40,3 +40,8 @@
 .popup-container {
 	background: rgba(31, 124, 155, 0.68) none repeat scroll 0% 0%;
 }
+
+#profilNomPrenom {
+	color: red;
+	font-size: 20px;
+}

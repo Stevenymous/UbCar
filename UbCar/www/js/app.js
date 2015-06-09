@@ -61,6 +61,16 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
       }
     }
   })
+//Voir la liste des trajets disponibles
+  .state('app.trajets', {
+    url: "/trajets",
+    views: {
+      'menuContent' :{
+        templateUrl: "templates/trajets.html",
+        controller: 'TrajetsCtrl'
+      }
+    }
+  })
   
 //  .state('app.playlists', {
 //    url: "/playlists",

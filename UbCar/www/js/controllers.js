@@ -1,7 +1,8 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, UbCarService) {
+.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $localstorage, $http) {
   $scope.loginData = {};
+  //var urlApi = 'http://localhost:1337/user/';
 
   $ionicModal.fromTemplateUrl('templates/login.html', {
     scope: $scope
@@ -18,14 +19,29 @@ angular.module('starter.controllers', [])
   };
 
   $scope.doLogin = function() {
-    console.log('Doing login', $scope.loginData);
-
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-    $timeout(function() {
-      $scope.closeLogin();
-    }, 1000);
+    //console.log('login', $scope.loginData);
+    //var emailStorage = $scope.loginData.email;
+    if(typeof $scope.loginData.email != 'undefined'){    
+      //$http.post(urlApi + 'login', loginData)
+      //  .success(function(data, status, headers, config) {
+      //    console.log('login response');
+      //    console.log(data);
+      //  });
+        $localstorage.set('email', $scope.loginData.email);
+        console.log('localstorage logIN', $localstorage.get('email'));
+    }
+    else{
+      var alertPopup = $ionicPopup.alert({
+      title: 'Ooooops!',
+      template: 'Votre profil n\'a pas été trouvé, veuillez réesayer.'
+      });
+    }
   };
+//Met la valeur de session à vide
+  $scope.logOut = function(){
+    $localstorage.set('email', '');
+    console.log('localstorage logOUT', $localstorage.get('email'));
+  }
 
 })
 
@@ -40,7 +56,7 @@ angular.module('starter.controllers', [])
 //Chargement de la fiche profil
   $http.get('http://localhost:1337/user/')
     .success(function(data, status, headers,config){
-      console.log('data success');
+      console.log('profil chargé');
       console.log(data);
       $scope.profil = data[0];
     })
@@ -59,16 +75,17 @@ angular.module('starter.controllers', [])
     $scope.modal.show();
   };
 
+  $scope.modalProfilModify = function() {
+    $scope.modal.show();
+  }
+
   $scope.addProfil = function() {
-    //$scope.profil = {};
-    console.log('Doing profil', $scope.profil);
+    console.log('add profil');
+    console.log($scope.profil);
 
     var post = $scope.profil;
     console.log(post);
 
-    //$timeout(function() {
-    //  $scope.closeProfilAdd();
-    //}, 1000);
   };
 
   $scope.modalProfilDelete = function() {
@@ -118,7 +135,7 @@ angular.module('starter.controllers', [])
 
 .controller('SearchCtrl', function($scope, $stateParams) {
     $scope.searchtrajet = {};
-   
+
     $scope.geolocalisation = function(position) {
 
       navigator.geolocation.getCurrentPosition(onSuccess, onError);
@@ -162,14 +179,30 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('AddTrajetCtrl', function($scope, $stateParams) {
+.controller('AddTrajetCtrl', function($scope, $stateParams, $localstorage, $ionicPopup) {
   $scope.addtrajet = {};
+    console.log('localstorage addtrajet', $localstorage.get('email'));
+
+  $scope.addTrajet = function() {
+
+    if(!$localstorage.get('email')) {
+      $ionicPopup.alert({
+        title: 'Ooooops!',
+        template: 'Veuillez vous connecter pour pouvoir ajouter un trajet.'
+      });
+    }
+    else {
+      console.log($scope.addtrajet);
+    }
+
+  }
 })
 
-.controller('UsersCtrl', function($scope, $http) {
-  var urlApi = 'http://localhost:1337/user/';
 
-  $http.get('http://localhost:1337/user/')
+.controller('TrajetsCtrl', function($scope, $http) {
+  var urlApi = 'http://localhost:1337/trajets/';
+
+  $http.get(urlApi)
       .success(function(data, status, headers,config){
         console.log('data success');
         console.log(data);
@@ -177,6 +210,30 @@ angular.module('starter.controllers', [])
       .error(function(data, status, headers, config){
         console.log('data error ' + status);
       })
+
+})
+
+
+.controller('UsersCtrl', function($scope, $http) {
+//  var urlApi = 'http://localhost:1337/user/';
+//
+//  $http.get('http://localhost:1337/user/')
+//      .success(function(data, status, headers,config){
+//        console.log('data success');
+//        console.log(data);
+//      })
+//      .error(function(data, status, headers, config){
+//        console.log('data error ' + status);
+//      })
+
+  $scope.users = [
+    { user: 'cool!', id: 1 },
+    { user: 'Chill', id: 2 },
+    { user: 'Dubstep', id: 3 },
+    { user: 'Indie', id: 4 },
+    { user: 'Rap', id: 5 },
+    { user: 'Cowbell', id: 6 }
+  ];
 
 
 })

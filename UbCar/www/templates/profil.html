@@ -11,11 +11,22 @@
       <i class="mdi-action-delete"></i>
     </button>
 
-    <h1>
-      <i class="mdi-social-mood"></i>
-      {{profil.prenom}}
-      {{profil.nom}}
-    </h1>
+      <div class="col s12 m8 offset-m2 l6 offset-l3">
+        <div class="card-panel grey lighten-5 z-depth-1">
+          <div class="row valign-wrapper">
+            <div class="col s2">
+              <img src="img/photoProfil.jpeg" alt="" class="circle responsive-img" style="cursor:pointer" ng-click="takePicture()" >
+            </div>
+            <div class="col s10">
+              <span id="profilNomPrenom">
+                {{profil.prenom}}
+                {{profil.nom}}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+            
 
      <button class="btn-large waves-effect waves-light teal darken-2" ng-click="takePicture()">
       <i class="mdi-social-party-mode"></i>
@@ -24,17 +35,17 @@
     <div id="divFicheProfil">
       <div class="row">
         <i class="mdi-social-location-city"></i>
-        <div class="col col-100">Ville : {{profil.ville}}</div>
+        <div class="col col-100">Habite à {{profil.ville}}</div>
       </div>
   
       <div class="row">
         <i class="icon ion-model-s"></i>
-        <div class="col col-100">Nombre de pace : {{profil.place}}</div>
+        <div class="col col-100">Voiture à {{profil.place}} places</div>
       </div>
   
       <div class="row">
         <i class="mdi-communication-quick-contacts-mail"></i>
-        <div class="col col-100">Email : {{profil.email}}</div>
+        <div class="col col-100">{{profil.email}}</div>
       </div>
     </div>
     

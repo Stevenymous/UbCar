@@ -2,7 +2,7 @@
   <ion-header-bar>
     <h1 class="title">Nouveau profil <i class="icon ion-edit"></i></h1>
     <div class="buttons">
-      <button class="button button-clear" ng-click="closeprofilAdd()">Fermer</button>
+      <button class="button button-clear" ng-click="closeProfilAdd()">Fermer</button>
     </div>
   </ion-header-bar>
   <ion-content>
@@ -38,14 +38,14 @@
             <div class="row">
               <div class="input-field col s12">
                 <i class="mdi-communication-quick-contacts-mail prefix"></i>
-                <input id="email" type="email" class="validate">
+                <input id="email" type="email" class="validate" ng-model="profil.email">
                 <label for="email">Email</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
                 <i class="mdi-device-screen-lock-portrait prefix"></i>
-                <input id="password" type="password" class="validate">
+                <input id="password" type="password" class="validate" ng-model="profil.mdp">
                 <label for="password">Mot de passe</label>
               </div>
             </div>

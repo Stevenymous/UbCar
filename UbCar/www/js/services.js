@@ -1,15 +1,18 @@
 angular.module('starter.services', [])
-
-  .factory('UbCarService', function ($http) {
-
-    var urlApi = 'http://localhost:1337/user/';
-    //var urlApi = 'https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain';
-
-
-    return {
-          findAll: function() {
-          return $http.get(urlApi);
-        }   
+  //local storage pour la gestion des sessions
+  .factory('$localstorage', ['$window', function($window) {
+  return {
+    set: function(key, value) {
+      $window.localStorage[key] = value;
+    },
+    get: function(key, defaultValue) {
+      return $window.localStorage[key] || defaultValue;
+    },
+    setObject: function(key, value) {
+      $window.localStorage[key] = JSON.stringify(value);
+    },
+    getObject: function(key) {
+      return JSON.parse($window.localStorage[key] || '{}');
     }
-    
-  });
+  }
+}]);

@@ -30,11 +30,17 @@
          <ion-item menu-close href="#/app/addTrajet">
           <i class="mdi-content-add-circle-outline"></i> Ajouter un trajet
         </ion-item>
+        <ion-item menu-close href="#/app/trajets">
+          <i class="mdi-maps-map"></i> Trajets disponibles
+        </ion-item>
+        <ion-item menu-close href="#/app/users">
+          <i class="ion-ios-people"></i> Utilisateurs
+        </ion-item>
         <ion-item menu-close href="#/app/welcome">
           <i class="mdi-action-book"></i> Crédits & Documentation
         </ion-item>
-         <ion-item menu-close href="#/app/users">
-          <i class="mdi-action-book"></i> Utilisateurs
+        <ion-item menu-close ng-click="logOut()">
+          <i class="mdi-action-exit-to-app"></i> Déconnexion
         </ion-item>
       </ion-list>
     </ion-content>
