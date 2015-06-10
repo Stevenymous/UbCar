@@ -1,8 +1,12 @@
+//var urlApi = 'http://localhost:1337/';
+//$http.get(urlApi + 'user/zefef63200@gmail.com/caca')
+var urlApi = 'http://ubcarbackend.herokuapp.com/';
+
+
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $localstorage, $http) {
+.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $localstorage, $http, $location) {
   $scope.loginData = {};
-  //var urlApi = 'http://localhost:1337/user/';
 
   $ionicModal.fromTemplateUrl('templates/login.html', {
     scope: $scope
@@ -19,53 +23,83 @@ angular.module('starter.controllers', [])
   };
 
   $scope.doLogin = function() {
-    //console.log('login', $scope.loginData);
-    //var emailStorage = $scope.loginData.email;
-    if(typeof $scope.loginData.email != 'undefined'){    
-      //$http.post(urlApi + 'login', loginData)
-      //  .success(function(data, status, headers, config) {
-      //    console.log('login response');
-      //    console.log(data);
-      //  });
-        $localstorage.set('email', $scope.loginData.email);
-        console.log('localstorage logIN', $localstorage.get('email'));
+    if(typeof $scope.loginData.email != 'undefined') {    
+      $http.get(urlApi + 'user' + '?mail=' + $scope.loginData.email + '&password=' + $scope.loginData.password)
+        .success(function(data, status, headers, config) {
+          console.log('login response');
+          console.log(data);
+          if(data != ""){
+            $localstorage.setObject('profil', data);
+            $localstorage.set('email', $scope.loginData.email);
+            $scope.modal.hide();
+            $location.path("/app/profil");
+            //console.log('localstorage logIN', $localstorage.get('email'));
+          }
+          else {
+            var alertPopup = $ionicPopup.alert({
+            title: 'Ooooops!',
+            template: 'Votre profil n\'a pas été trouvé, veuillez réesayer.'
+            });
+          }
+        })
+        .error(function(data, status, headers, config){
+          console.log('data error ' + status);
+        })
     }
-    else{
+    else {
       var alertPopup = $ionicPopup.alert({
       title: 'Ooooops!',
       template: 'Votre profil n\'a pas été trouvé, veuillez réesayer.'
       });
     }
   };
+
 //Met la valeur de session à vide
-  $scope.logOut = function(){
+  $scope.logOut = function() {   
     $localstorage.set('email', '');
-    console.log('localstorage logOUT', $localstorage.get('email'));
+    $localstorage.set('profil', '');
+    console.log('localstorage logOUT email', $localstorage.get('email'));
+    console.log('localstorage profil', $localstorage.get('profil'));
   }
 
 })
 
-.controller('ProfilCtrl', function($scope, $ionicModal, $timeout, $ionicPopup, $http) {
+.controller('ProfilCtrl', function($scope, $ionicModal, $timeout, $ionicPopup, $localstorage, $http) {
   $scope.profil = {};
+  var profil = $localstorage.getObject('profil');
 
-  $ionicModal.fromTemplateUrl('templates/profilAdd.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.modal = modal;
-  });
-//Chargement de la fiche profil
-  $http.get('http://localhost:1337/user/')
-    .success(function(data, status, headers,config){
-      console.log('profil chargé');
-      console.log(data);
-      $scope.profil = data[0];
-    })
-    .error(function(data, status, headers, config){
-      var alertPopup = $ionicPopup.alert({
-      title: 'Ooooops!',
-      template: 'Votre profil n\'a pas été trouvé'
-      });
-    });
+  if( typeof profil[0] != 'undefined' ) {    
+    console.log('profil chargé');
+    $scope.profil = profil;
+    $scope.profil.name = $scope.profil[0].name;
+    $scope.profil.lastName = $scope.profil[0].lastName;
+    $scope.profil.city = $scope.profil[0].city;
+    $scope.profil.numberSeat = $scope.profil[0].numberSeat;
+    $scope.profil.mail = $scope.profil[0].mail;
+  }
+  else {
+    console.log('objet profil vide');
+       var confirmPopup = $ionicPopup.confirm({
+    title: 'Profil non renseigné',
+    template: 'Voulez-vous créer votre profil?',
+    cssClass: '.popup-container',
+    buttons: [
+      { 
+        text: 'Plus tard',
+        onTap: function(event) {
+          confirmPopup.close();
+        } 
+      },
+      {
+        text: '<b>Bien sûr!</b>',
+        type: 'button-positive',
+        onTap: function(event) {
+          $scope.modal.show();
+        } 
+      }
+    ]
+   })
+  }
 
   $scope.closeProfilAdd = function() {
     $scope.modal.hide();
@@ -77,14 +111,73 @@ angular.module('starter.controllers', [])
 
   $scope.modalProfilModify = function() {
     $scope.modal.show();
+    console.log($scope.profil);
+    //$http.get(urlApi + 'user' + '?mail=' + $scope.loginData.email + '&password=' + $scope.loginData.password)
+    //  .success(function(data, status, headers, config) {
+    //    console.log('login response');
+    //    console.log(data);
+    //    if(data != ""){
+    //      $localstorage.setObject('profil', data);
+    //      $localstorage.set('email', $scope.loginData.email);
+    //      $scope.modal.hide();
+    //      $location.path("/app/profil");
+    //      //console.log('localstorage logIN', $localstorage.get('email'));
+    //    }
+    //    else {
+    //      var alertPopup = $ionicPopup.alert({
+    //      title: 'Ooooops!',
+    //      template: 'Votre profil n\'a pas été trouvé, veuillez réesayer.'
+    //      });
+    //    }
+    //  })
+    //  .error(function(data, status, headers, config){
+    //    console.log('data error ' + status);
+    //  })
   }
 
-  $scope.addProfil = function() {
-    console.log('add profil');
-    console.log($scope.profil);
+  $ionicModal.fromTemplateUrl('templates/profilAdd.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
 
-    var post = $scope.profil;
-    console.log(post);
+  $scope.addProfil = function() {
+    console.log('add profil', $scope.profil);
+  //http://ubcarbackend.herokuapp.com/user/create?name=lara&lastName=fabian&mail=fabian@dudu.com&city=diou&numberSeat=7&password=coucou
+
+    if( typeof $scope.profil.email != 'undefined' && typeof $scope.profil.password != 'undefined' &&
+        typeof $scope.profil.lastName != 'undefined' && typeof $scope.profil.city != 'undefined' &&
+        typeof $scope.profil.name != 'undefined' ) {    
+      $http.post(urlApi + 'user/create' 
+                        + '?name=' + $scope.profil.name 
+                        + '&lastName=' + $scope.profil.lastName
+                        + '&city=' + $scope.profil.city
+                        + '&numberSeat=' + $scope.profil.numberSeat
+                        + '&mail=' + $scope.profil.mail
+                        + '&password=' + $scope.profil.password )
+        .success(function(data, status, headers, config) {
+          console.log('login response');
+          console.log(data);
+          $localstorage.setObject('profil', data);
+          $localstorage.set('email', $scope.profil.email);
+          $scope.modal.hide();
+        })
+        .error(function(data, status, headers, config){
+          console.log('data error ' + status, data);
+          console.log('objet ' , $scope.profil, $scope.profil.email);
+          var alertPopup = $ionicPopup.alert({
+            title: 'Ooooops!',
+            template: 'Votre profil n\'a pas pus être crée, veuillez réesayer.'
+          });
+        })
+    }
+    else {
+      var alertPopup = $ionicPopup.alert({
+      title: 'Ooooops!',
+      template: 'Vueillez renseigner tous les champs.'
+      });
+    }
+
 
   };
 
@@ -214,8 +307,26 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('UsersCtrl', function($scope, $http) {
-//  var urlApi = 'http://localhost:1337/user/';
+.controller('UsersCtrl', function($scope, $http, $stateParams) {
+  $scope.users = [
+    { name: 'cool!', id: 1 },
+    { name: 'Chill', id: 2 },
+    { name: 'Dubstep', id: 3 },
+    { name: 'Indie', id: 4 },
+    { name: 'Rap', id: 5 },
+    { name: 'Cowbell', id: 6 }
+  ];
+
+
+})
+
+.controller('UserCtrl', function($scope, $stateParams) {
+ })
+
+
+.controller('TrajetsCtrl', function($scope) {
+
+  //  var urlApi = 'http://localhost:1337/user/';
 //
 //  $http.get('http://localhost:1337/user/')
 //      .success(function(data, status, headers,config){
@@ -226,29 +337,15 @@ angular.module('starter.controllers', [])
 //        console.log('data error ' + status);
 //      })
 
-  $scope.users = [
-    { user: 'cool!', id: 1 },
-    { user: 'Chill', id: 2 },
-    { user: 'Dubstep', id: 3 },
-    { user: 'Indie', id: 4 },
-    { user: 'Rap', id: 5 },
-    { user: 'Cowbell', id: 6 }
+  $scope.trajets = [
+    { title: 'cool!', id: 1 },
+    { title: 'Chill', id: 2 },
+    { title: 'Dubstep', id: 3 },
+    { title: 'Indie', id: 4 },
+    { title: 'Rap', id: 5 },
+    { title: 'Cowbell', id: 6 }
   ];
-
-
 })
 
-
-//.controller('PlaylistsCtrl', function($scope) {
-//  $scope.playlists = [
-//    { title: 'cool!', id: 1 },
-//    { title: 'Chill', id: 2 },
-//    { title: 'Dubstep', id: 3 },
-//    { title: 'Indie', id: 4 },
-//    { title: 'Rap', id: 5 },
-//    { title: 'Cowbell', id: 6 }
-//  ];
-//})
-//
-//.controller('PlaylistCtrl', function($scope, $stateParams) {
-//});
+.controller('TrajetCtrl', function($scope, $stateParams) {
+});

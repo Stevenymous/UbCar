@@ -19,8 +19,8 @@
             </div>
             <div class="col s10">
               <span id="profilNomPrenom">
-                {{profil.prenom}}
-                {{profil.nom}}
+                {{profil.name}}
+                {{profil.lastName}}
               </span>
             </div>
           </div>
@@ -28,24 +28,24 @@
       </div>
             
 
-     <button class="btn-large waves-effect waves-light teal darken-2" ng-click="takePicture()">
+    <button class="btn-large waves-effect waves-light teal darken-2" ng-click="takePicture()">
       <i class="mdi-social-party-mode"></i>
     </button>
 
     <div id="divFicheProfil">
       <div class="row">
         <i class="mdi-social-location-city"></i>
-        <div class="col col-100">Habite à {{profil.ville}}</div>
+        <div class="col col-100">Habite à {{profil.city}}</div>
       </div>
   
       <div class="row">
         <i class="icon ion-model-s"></i>
-        <div class="col col-100">Voiture à {{profil.place}} places</div>
+        <div class="col col-100">Voiture à {{profil.numberSeat}} places</div>
       </div>
   
       <div class="row">
         <i class="mdi-communication-quick-contacts-mail"></i>
-        <div class="col col-100">{{profil.email}}</div>
+        <div class="col col-100">{{profil.mail}}</div>
       </div>
     </div>
     

@@ -56,18 +56,29 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
     url: "/addTrajet",
     views: {
       'menuContent': {
-        templateUrl: "templates/trajet.html",
+        templateUrl: "templates/trajetAdd.html",
         controller: 'AddTrajetCtrl'
       }
     }
   })
-//Voir la liste des trajets disponibles
+//Liste des trajets disponibles
   .state('app.trajets', {
     url: "/trajets",
     views: {
       'menuContent' :{
         templateUrl: "templates/trajets.html",
         controller: 'TrajetsCtrl'
+      }
+    }
+  })
+
+  //Détail du trajet
+  .state('app.trajet', {
+    url: "/trajets/:trajetId",
+    views: {
+      'menuContent' :{
+        templateUrl: "templates/trajet.html",
+        controller: 'TrajetCtrl'
       }
     }
   })
@@ -108,6 +119,16 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
       'menuContent' :{
         templateUrl: "templates/users.html",
         controller: 'UsersCtrl'
+      }
+    }
+  })
+
+  .state('app.user', {
+    url: "/users/:userID",
+    views: {
+      'menuContent' :{
+        templateUrl: "templates/user.html",
+        controller: 'UserCtrl'
       }
     }
   })
