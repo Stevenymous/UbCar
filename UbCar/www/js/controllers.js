@@ -1,6 +1,7 @@
 //var urlApi = 'http://localhost:1337/';
 //$http.get(urlApi + 'user/zefef63200@gmail.com/caca')
 var urlApi = 'http://ubcarbackend.herokuapp.com/';
+var profil = 'undefined';
 
 
 angular.module('starter.controllers', [])
@@ -23,33 +24,49 @@ angular.module('starter.controllers', [])
   };
 
   $scope.doLogin = function() {
-    if(typeof $scope.loginData.email != 'undefined') {    
-      $http.get(urlApi + 'user' + '?mail=' + $scope.loginData.email + '&password=' + $scope.loginData.password)
-        .success(function(data, status, headers, config) {
-          console.log('login response');
-          console.log(data);
-          if(data != ""){
-            $localstorage.setObject('profil', data);
-            $localstorage.set('email', $scope.loginData.email);
-            $scope.modal.hide();
-            $location.path("/app/profil");
-            //console.log('localstorage logIN', $localstorage.get('email'));
-          }
-          else {
+      console.log('profil[0] ProfilCtrl', profil[0]);
+      console.log('profil ProfilCtrl', profil);
+
+
+    if( typeof profil[0] == 'undefined' ) {    
+      if(typeof $scope.loginData.email != 'undefined' && typeof $scope.loginData.password != 'undefined') {    
+        $http.get(urlApi + 'user' + '?mail=' + $scope.loginData.email + '&password=' + $scope.loginData.password)
+          .success(function(data, status, headers, config) {
+            console.log('login response');
+            console.log(data);
+            if(data != ""){
+              $localstorage.setObject('profil', data);
+              $localstorage.set('email', $scope.loginData.email);
+              $scope.modal.hide();
+              $location.path("/app/profil");
+              //console.log('localstorage logIN', $localstorage.get('email'));
+            }
+            else {
+              var alertPopup = $ionicPopup.alert({
+                title: 'Ooooops!',
+                template: 'Votre profil n\'a pas été trouvé, veuillez réesayer.'
+              });
+            }
+          })
+          .error(function(data, status, headers, config){
+            console.log('data error ' + status);
             var alertPopup = $ionicPopup.alert({
-            title: 'Ooooops!',
-            template: 'Votre profil n\'a pas été trouvé, veuillez réesayer.'
+              title: 'Ooooops!',
+              template: 'Votre profil n\'a pas été trouvé, veuillez réesayer.'
             });
-          }
-        })
-        .error(function(data, status, headers, config){
-          console.log('data error ' + status);
-        })
+          })
+      }
+      else {
+        var alertPopup = $ionicPopup.alert({
+          title: 'Ooooops!',
+          template: 'Vueillez renseigner tous les champs.'
+        });
+      }
     }
     else {
       var alertPopup = $ionicPopup.alert({
-      title: 'Ooooops!',
-      template: 'Votre profil n\'a pas été trouvé, veuillez réesayer.'
+        title: 'Hum...',
+        template: 'Vous êtes déjà connecté =P'
       });
     }
   };
@@ -65,26 +82,24 @@ angular.module('starter.controllers', [])
 })
 
 .controller('ProfilCtrl', function($scope, $ionicModal, $timeout, $ionicPopup, $localstorage, $http) {
-  $scope.profil = {};
-  var profil = $localstorage.getObject('profil');
+  profil = $localstorage.getObject('profil');
+  console.log('profil[0] ProfilCtrl', profil[0]);
 
   if( typeof profil[0] != 'undefined' ) {    
-    console.log('profil chargé');
-    $scope.profil = profil;
-    $scope.profil.name = $scope.profil[0].name;
-    $scope.profil.lastName = $scope.profil[0].lastName;
-    $scope.profil.city = $scope.profil[0].city;
-    $scope.profil.numberSeat = $scope.profil[0].numberSeat;
-    $scope.profil.mail = $scope.profil[0].mail;
+    $scope.profil = {}
+    $scope.profil.name = profil[0].name;
+    $scope.profil.lastName = profil[0].lastName;
+    $scope.profil.city = profil[0].city;
+    $scope.profil.numberSeat = profil[0].numberSeat;
+    $scope.profil.mail = profil[0].mail;
   }
   else {
     console.log('objet profil vide');
-       var confirmPopup = $ionicPopup.confirm({
-    title: 'Profil non renseigné',
-    template: 'Voulez-vous créer votre profil?',
-    cssClass: '.popup-container',
-    buttons: [
-      { 
+    var confirmPopup = $ionicPopup.confirm({
+      title: 'Profil non renseigné',
+      template: 'Voulez-vous créer votre profil?',
+      cssClass: '.popup-container',
+      buttons: [{ 
         text: 'Plus tard',
         onTap: function(event) {
           confirmPopup.close();
@@ -96,9 +111,8 @@ angular.module('starter.controllers', [])
         onTap: function(event) {
           $scope.modal.show();
         } 
-      }
-    ]
-   })
+      }]
+    })
   }
 
   $scope.closeProfilAdd = function() {
@@ -109,43 +123,10 @@ angular.module('starter.controllers', [])
     $scope.modal.show();
   };
 
-  $scope.modalProfilModify = function() {
-    $scope.modal.show();
-    console.log($scope.profil);
-    //$http.get(urlApi + 'user' + '?mail=' + $scope.loginData.email + '&password=' + $scope.loginData.password)
-    //  .success(function(data, status, headers, config) {
-    //    console.log('login response');
-    //    console.log(data);
-    //    if(data != ""){
-    //      $localstorage.setObject('profil', data);
-    //      $localstorage.set('email', $scope.loginData.email);
-    //      $scope.modal.hide();
-    //      $location.path("/app/profil");
-    //      //console.log('localstorage logIN', $localstorage.get('email'));
-    //    }
-    //    else {
-    //      var alertPopup = $ionicPopup.alert({
-    //      title: 'Ooooops!',
-    //      template: 'Votre profil n\'a pas été trouvé, veuillez réesayer.'
-    //      });
-    //    }
-    //  })
-    //  .error(function(data, status, headers, config){
-    //    console.log('data error ' + status);
-    //  })
-  }
-
-  $ionicModal.fromTemplateUrl('templates/profilAdd.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.modal = modal;
-  });
-
   $scope.addProfil = function() {
     console.log('add profil', $scope.profil);
-  //http://ubcarbackend.herokuapp.com/user/create?name=lara&lastName=fabian&mail=fabian@dudu.com&city=diou&numberSeat=7&password=coucou
 
-    if( typeof $scope.profil.email != 'undefined' && typeof $scope.profil.password != 'undefined' &&
+    if( typeof $scope.profil.mail != 'undefined' && typeof $scope.profil.password != 'undefined' &&
         typeof $scope.profil.lastName != 'undefined' && typeof $scope.profil.city != 'undefined' &&
         typeof $scope.profil.name != 'undefined' ) {    
       $http.post(urlApi + 'user/create' 
@@ -176,18 +157,68 @@ angular.module('starter.controllers', [])
       title: 'Ooooops!',
       template: 'Vueillez renseigner tous les champs.'
       });
+      $scope.profil = {};
     }
 
+  }; 
 
+  $ionicModal.fromTemplateUrl('templates/profilAdd.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
+
+  $ionicModal.fromTemplateUrl('templates/profilModify.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.modalModify = modal;
+  });
+
+  $scope.closeProfilModify = function() {
+    $scope.modalModify.hide();
   };
 
+  $scope.modalProfilModify = function() {
+    $scope.modalModify.show();
+  }
+
+  $scope.modfierProfil = function() {
+    console.log('modify response');
+  
+    $http.put(urlApi + 'user/' + profil[0].id, 
+      {
+        lastName : $scope.profil.lastName,
+        name : $scope.profil.name,
+        city : $scope.profil.city,
+        numberSeat : $scope.profil.numberSeat
+      })
+      .success(function(data, status, headers, config) {
+        console.log(data, status, headers, config);
+        $localstorage.setObject('profil', data);
+        profil[0].name = $scope.profil.name;
+        profil[0].lastName = $scope.profil.lastName;
+        profil[0].city = $scope.profil.city;
+        profil[0].numberSeat = $scope.profil.numberSeat;
+        profil[0].mail = $scope.profil.mail;
+        $scope.modalModify.hide();
+        console.log('profil[0] modfierProfil', profil[0]);
+
+      })
+      .error(function(data, status, headers, config){
+        var alertPopup = $ionicPopup.alert({
+          title: 'Ooooops!',
+          template: 'Votre profil n\'a pas pus être modifié, veuillez réesayer.'
+        });
+      })
+  };
+
+
   $scope.modalProfilDelete = function() {
-   var confirmPopup = $ionicPopup.confirm({
-    title: 'Suppression de profil',
-    template: 'Etes-vous sûr de vouloir supprimer votre profil?',
-    cssClass: '.popup-container',
-    buttons: [
-      { 
+    var confirmPopup = $ionicPopup.confirm({
+      title: 'Suppression de profil',
+      template: 'Etes-vous sûr de vouloir supprimer votre profil?',
+      cssClass: '.popup-container',
+      buttons: [{ 
         text: 'Non',
         onTap: function(event) {
           confirmPopup.close();
@@ -198,10 +229,34 @@ angular.module('starter.controllers', [])
         type: 'button-positive',
         onTap: function(event) {
           console.log('You are sure');
+          console.log('$scope.profil', $scope.profil);
+          console.log('profil[0]', profil[0]);
+
+          $http.delete(urlApi + 'user', 
+            {
+              id: profil[0].id
+            })
+            .success(function(data, status, headers, config) {
+              console.log('delete user', data, status, headers, config);
+              $localstorage.set('profil', '');
+              $localstorage.set('email', '');
+              $scope.modalModify.hide();
+              $scope.profil = {};
+
+              console.log('localstorage delete user email', $localstorage.get('email'));
+              console.log('localstorage delete user profil', $localstorage.get('profil'));
+              console.log('$scope.profil delete user', $scope.profil);
+
+            })
+            .error(function(data, status, headers, config){
+              var alertPopup = $ionicPopup.alert({
+                title: 'Ooooops!',
+                template: 'Votre profil n\'a pas pus être suprimé, veuillez réesayer.'
+              });
+            })
         } 
-      }
-    ]
-   })
+      }]
+     })
   };
 
 

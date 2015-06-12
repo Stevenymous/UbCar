@@ -40,8 +40,14 @@
   
       <div class="row">
         <i class="icon ion-model-s"></i>
-        <div class="col col-100">Voiture à {{profil.numberSeat}} places</div>
+        <div class="col col-100">Voiture à {{profil.numberSeat}}
+          <ng-pluralize count="profil.numberSeat"
+                when="{'one': 'place',
+                       'other': 'places'}">
+          </ng-pluralize>
+        </div>
       </div>
+
   
       <div class="row">
         <i class="mdi-communication-quick-contacts-mail"></i>
