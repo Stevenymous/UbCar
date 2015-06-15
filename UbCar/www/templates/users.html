@@ -4,8 +4,23 @@
   </ion-nav-buttons>
   <ion-content class="has-header">
     <ion-list>
-      <ion-item ng-repeat="user in users | orderBy:'name'" href="#/app/users/{{user.id}}">
-        {{user.name}}
+      <ion-item ng-repeat="user in users | orderBy:'startDate'" href="#/app/users/{{user.id}}">
+        <i class="mdi-action-perm-identity prefix blue accent-3"></i>
+        {{user.name}} {{user.lastName}}
+        <i class="mdi-communication-quick-contacts-mail prefix"></i>
+        {{user.mail}}
+        <i class="mdi-action-today prefix left">
+        {{user.createdAt | date:'yyyy-MM-dd'}}
+        </i>
+        <i class="mdi-maps-directions-car prefix right">
+        {{user.numberSeat}}
+        <ng-pluralize count="user.numberSeat"
+                      when="{'one': 'place','other': 'places'}">
+        </ng-pluralize>
+        </i>
+        <li class="animate-repeat" ng-if="results.length == 0">
+          <strong>Aucun utilisateur disponible pour le moment...</strong>
+        </li>
       </ion-item>
     </ion-list>
   </ion-content>

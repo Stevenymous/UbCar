@@ -1,5 +1,38 @@
 <ion-view view-title="Trajet détail">
   <ion-content>
-    <h1>Oeee!</h1>
+    <h1>Informations sur le trajet :</h1>
+		<p>
+			<i class="mdi-maps-place prefix green accent-3 left"></i>
+			{{trajet.startCity}}
+		</p>
+
+		<p>
+			<i class="mdi-maps-place prefix orange accent-4 left"></i>        
+			{{trajet.arrivalCity}}
+		</p>
+
+		<p>
+			<i class="mdi-action-today prefix left"></i>
+			{{trajet.startDate | date:'yyyy-MM-dd'}}
+		</p>
+
+		<p>
+			<i class="mdi-action-perm-contact-cal prefix left"></i>
+			{{trajet.numberSeat}}
+			<ng-pluralize count="trajet.numberSeat"
+						when="{'one': 'place','other': 'places'}">
+			</ng-pluralize>
+		</p>
+
+		<p>
+			<i class="mdi-content-content-paste prefix left"></i>
+			{{trajet.details}}
+		</p>
+		</br></br>
+	<div>
+    	<button class="waves-effect waves-light btn green accent-3" ng-click="subscribe()"><i class="mdi-content-add-box right"></i>S'inscrire</button>
+    	</br></br>
+    	<button class="waves-effect waves-light btn deep-orange accent-3" ng-click="unsubscribe()"><i class="mdi-content-remove-circle right"></i>Se désinscrire</button>
+	</div>
   </ion-content>
 </ion-view>

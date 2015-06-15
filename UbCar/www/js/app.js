@@ -72,9 +72,9 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
     }
   })
 
-  //Détail du trajet
+//Détail du trajet
   .state('app.trajet', {
-    url: "/trajets/:trajetId",
+    url: "/trajets/:startCity/:arrivalCity/:startDate",
     views: {
       'menuContent' :{
         templateUrl: "templates/trajet.html",
@@ -82,38 +82,9 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
       }
     }
   })
-  
-//  .state('app.playlists', {
-//    url: "/playlists",
-//    views: {
-//      'menuContent': {
-//        templateUrl: "templates/playlists.html",
-//        controller: 'PlaylistsCtrl'
-//      }
-//    }
-//  })
-//
-//  .state('app.single', {
-//    url: "/playlists/:playlistId",
-//    views: {
-//      'menuContent': {
-//        templateUrl: "templates/playlist.html",
-//        controller: 'PlaylistCtrl'
-//      }
-//    }
-//  });
 
-//Documentation de l'application
-  .state('app.documentation', {
-    url: "/documentation",
-    views: {
-      'menuContent': {
-        templateUrl: "templates/documentation.html",
-      }
-    }
-  })
-
-  .state('app.users', {
+//Liste des utilisateurs  
+ .state('app.users', {
     url: "/users",
     views: {
       'menuContent' :{
@@ -129,6 +100,16 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
       'menuContent' :{
         templateUrl: "templates/user.html",
         controller: 'UserCtrl'
+      }
+    }
+  })
+
+//Documentation de l'application
+  .state('app.documentation', {
+    url: "/documentation",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/documentation.html",
       }
     }
   })

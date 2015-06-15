@@ -1,8 +1,24 @@
 <ion-view view-title="Trajets">
   <ion-content>
     <ion-list>
-      <ion-item ng-repeat="trajet in trajets" href="#/app/trajets/{{trajet.id}}">
-        {{trajet.title}}
+      <ion-item ng-repeat="trajet in trajets | orderBy:'startDate'" href="#/app/trajets/{{trajet.startCity}}/{{trajet.arrivalCity}}/{{trajet.startDate}}">
+        <i class="mdi-maps-place prefix green accent-3"></i>
+        {{trajet.startCity}}
+        <i class="mdi-navigation-arrow-forward prefix"></i>
+        <i class="mdi-maps-place prefix orange accent-4"></i>        
+        {{trajet.arrivalCity}}
+        <i class="mdi-action-today prefix left">
+        {{trajet.startDate | date:'yyyy-MM-dd'}}
+        </i>
+        <i class="mdi-action-perm-contact-cal prefix right">
+        {{trajet.numberSeat}}
+        <ng-pluralize count="trajet.numberSeat"
+                      when="{'one': 'place','other': 'places'}">
+        </ng-pluralize>
+        </i>
+        <li class="animate-repeat" ng-if="results.length == 0">
+      		<strong>Aucun trajet disponible pour le moment...</strong>
+    	</li>
       </ion-item>
     </ion-list>
   </ion-content>

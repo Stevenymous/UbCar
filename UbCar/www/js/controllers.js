@@ -24,11 +24,11 @@ angular.module('starter.controllers', [])
   };
 
   $scope.doLogin = function() {
-      console.log('profil[0] ProfilCtrl', profil[0]);
-      console.log('profil ProfilCtrl', profil);
+      profil = $localstorage.getObject('profil');
+      console.log('profil[0] doLogin', profil[0]);
+      console.log('profil doLogin', profil);
 
-
-    if( typeof profil[0] == 'undefined' ) {    
+    if(typeof profil[0] == 'undefined') {    
       if(typeof $scope.loginData.email != 'undefined' && typeof $scope.loginData.password != 'undefined') {    
         $http.get(urlApi + 'user' + '?mail=' + $scope.loginData.email + '&password=' + $scope.loginData.password)
           .success(function(data, status, headers, config) {
@@ -36,10 +36,12 @@ angular.module('starter.controllers', [])
             console.log(data);
             if(data != ""){
               $localstorage.setObject('profil', data);
+              console.log('data profil', profil);
               $localstorage.set('email', $scope.loginData.email);
               $scope.modal.hide();
               $location.path("/app/profil");
-              //console.log('localstorage logIN', $localstorage.get('email'));
+              console.log('profil[0] doLoginSucess', profil[0]);
+              console.log('profil doLoginSucess', profil);
             }
             else {
               var alertPopup = $ionicPopup.alert({
@@ -84,9 +86,10 @@ angular.module('starter.controllers', [])
 .controller('ProfilCtrl', function($scope, $ionicModal, $timeout, $ionicPopup, $localstorage, $http) {
   profil = $localstorage.getObject('profil');
   console.log('profil[0] ProfilCtrl', profil[0]);
+  $scope.profil = {};
 
   if( typeof profil[0] != 'undefined' ) {    
-    $scope.profil = {}
+    $scope.profil.userCreated = 0;
     $scope.profil.name = profil[0].name;
     $scope.profil.lastName = profil[0].lastName;
     $scope.profil.city = profil[0].city;
@@ -102,6 +105,7 @@ angular.module('starter.controllers', [])
       buttons: [{ 
         text: 'Plus tard',
         onTap: function(event) {
+          $scope.profil.userCreated = 1;
           confirmPopup.close();
         } 
       },
@@ -242,6 +246,8 @@ angular.module('starter.controllers', [])
               $localstorage.set('email', '');
               $scope.modalModify.hide();
               $scope.profil = {};
+              $scope.profil.userCreated = 0;
+
 
               console.log('localstorage delete user email', $localstorage.get('email'));
               console.log('localstorage delete user profil', $localstorage.get('profil'));
@@ -327,12 +333,11 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('AddTrajetCtrl', function($scope, $stateParams, $localstorage, $ionicPopup) {
+.controller('AddTrajetCtrl', function($scope, $stateParams, $localstorage, $ionicPopup, $http) {
   $scope.addtrajet = {};
-    console.log('localstorage addtrajet', $localstorage.get('email'));
+  console.log('localstorage addtrajet', $localstorage.get('email'));
 
   $scope.addTrajet = function() {
-
     if(!$localstorage.get('email')) {
       $ionicPopup.alert({
         title: 'Ooooops!',
@@ -340,67 +345,125 @@ angular.module('starter.controllers', [])
       });
     }
     else {
-      console.log($scope.addtrajet);
+      console.log('$scope.addtrajet', $scope.addtrajet);
+      console.log('$scope.addtrajet.startCity', $scope.addtrajet.startCity);
+
+      $http.post(urlApi + 'trajet',
+      {
+        startCity : $scope.addtrajet.startCity,
+        arrivalCity : $scope.addtrajet.arrivalCity,
+        startDate : $scope.addtrajet.startDate,
+        numberSeat : $scope.addtrajet.numberSeat,
+        details : $scope.addtrajet.details
+      })
+      .success(function(data, status, headers, config){
+        console.log('addtrajet success', data);
+        //$scope.trajet = data;
+        //console.log('$scope.trajet', $scope.trajet);
+      })
+      .error(function(data, status, headers, config){
+        console.log('addtrajet error ' + status, headers, config);
+        var alertPopup = $ionicPopup.alert({
+          title: 'Ooooops!',
+          template: 'Un problème est survenue lors de la création, veuillez réesayer. Excusez nous pour la gène occasionée...'
+        });
+      })
     }
 
   }
 })
 
-
 .controller('TrajetsCtrl', function($scope, $http) {
-  var urlApi = 'http://localhost:1337/trajets/';
+  console.log('TrajetsCtrl');
 
-  $http.get(urlApi)
-      .success(function(data, status, headers,config){
-        console.log('data success');
-        console.log(data);
+  $http.get(urlApi + 'trajet')
+      .success(function(data, status, headers, config){
+        console.log('TrajetsCtrl success', data);
+        $scope.trajets = [];
+        for(var i = 0; i < data.trajets.length; i ++){          
+          $scope.trajets.push(data.trajets[i]);
+        }
       })
       .error(function(data, status, headers, config){
-        console.log('data error ' + status);
+        console.log('TrajetsCtrl error ' + status, headers, config);
+        var alertPopup = $ionicPopup.alert({
+          title: 'Ooooops!',
+          template: 'Les trajets sont indisponibles pour le moment.'
+        });
       })
-
 })
 
+.controller('TrajetCtrl', function($scope, $stateParams, $http) {
+  console.log('TrajetCtrl', $stateParams );
+
+  $http.get(urlApi + 'trajet',
+  {
+    startCity : $stateParams.startCity,
+    arrivalCity : $stateParams.arrivalCity,
+    startDate : $stateParams.startDate
+  })
+  .success(function(data, status, headers, config){
+    console.log('TrajetCtrl success', data);
+    $scope.trajet = data;
+    console.log('$scope.trajet', $scope.trajet);
+  })
+  .error(function(data, status, headers, config){
+    console.log('TrajetCtrl error ' + status, headers, config);
+    var alertPopup = $ionicPopup.alert({
+      title: 'Ooooops!',
+      template: 'Le détail du trajet n\'a pas été trouvé, veuillez réesayer.'
+    });
+  })
+
+  $scope.subscribe = function() {
+    console.log('subscribe');
+
+  /*  $http.put(urlApi + 'user/' + profil[0].id + '/subscribeTrajet/trajet/' + trajet.id)
+      .success(function(data, status, headers, config) {
+        console.log(data, status, headers, config);
+        $localstorage.setObject('profil', data);
+        profil[0].name = $scope.profil.name;
+        profil[0].lastName = $scope.profil.lastName;
+        profil[0].city = $scope.profil.city;
+        profil[0].numberSeat = $scope.profil.numberSeat;
+        profil[0].mail = $scope.profil.mail;
+        $scope.modalModify.hide();
+        console.log('profil[0] modfierProfil', profil[0]);
+
+      })
+      .error(function(data, status, headers, config){
+        var alertPopup = $ionicPopup.alert({
+          title: 'Ooooops!',
+          template: 'Votre profil n\'a pas pus être modifié, veuillez réesayer.'
+        });
+      })*/
+  }
+
+  $scope.unsubscribe = function() {
+    console.log('unsubscribe');
+  }
+})
 
 .controller('UsersCtrl', function($scope, $http, $stateParams) {
-  $scope.users = [
-    { name: 'cool!', id: 1 },
-    { name: 'Chill', id: 2 },
-    { name: 'Dubstep', id: 3 },
-    { name: 'Indie', id: 4 },
-    { name: 'Rap', id: 5 },
-    { name: 'Cowbell', id: 6 }
-  ];
+  console.log('UsersCtrl');
 
-
+  $http.get(urlApi + 'user')
+      .success(function(data, status, headers, config){
+        console.log('UsersCtrl success', data);
+        $scope.users = [];
+        for(var i = 0; i < data.length; i ++){          
+          $scope.users.push(data[i]);
+        }
+      })
+      .error(function(data, status, headers, config){
+        console.log('UsersCtrl error ' + status, headers, config);
+        var alertPopup = $ionicPopup.alert({
+          title: 'Ooooops!',
+          template: 'Les utilisateurs sont indisponibles pour le moment.'
+        });
+      })
 })
 
 .controller('UserCtrl', function($scope, $stateParams) {
  })
 
-
-.controller('TrajetsCtrl', function($scope) {
-
-  //  var urlApi = 'http://localhost:1337/user/';
-//
-//  $http.get('http://localhost:1337/user/')
-//      .success(function(data, status, headers,config){
-//        console.log('data success');
-//        console.log(data);
-//      })
-//      .error(function(data, status, headers, config){
-//        console.log('data error ' + status);
-//      })
-
-  $scope.trajets = [
-    { title: 'cool!', id: 1 },
-    { title: 'Chill', id: 2 },
-    { title: 'Dubstep', id: 3 },
-    { title: 'Indie', id: 4 },
-    { title: 'Rap', id: 5 },
-    { title: 'Cowbell', id: 6 }
-  ];
-})
-
-.controller('TrajetCtrl', function($scope, $stateParams) {
-});

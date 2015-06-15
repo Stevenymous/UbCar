@@ -12,18 +12,18 @@
             <div class="row">
               <div class="input-field col s6">
                 <i class="mdi-action-account-circle prefix"></i>
-                <input id="lastName" type="text" class="validate" ng-model="profil.lastName">
+                <input id="lastName" type="text" class="validate" ng-Required="true" ng-model="profil.lastName">
                 <label for="lastName">Prénom</label>
               </div>
               <div class="input-field col s6">
-                <input id="name" type="text" class="validate" ng-model="profil.name">
+                <input id="name" type="text" class="validate" ng-Required="true" ng-model="profil.name">
                 <label for="name">Nom</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s6">
                 <i class="mdi-action-home prefix"></i>
-                <input id="city" type="text" class="validate" ng-model="profil.city">
+                <input id="city" type="text" class="validate" ng-Required="true" ng-model="profil.city">
                 <label for="city">Ville</label>
               </div>
             </div>
@@ -31,21 +31,21 @@
                 <label id="labelNbPlace">Nombre de place : {{profil.numberSeat}}</label>
                 <div class="item range range-positive">
                   <i class="icon ion-android-car"></i>
-                  <input type="range" name="numberSeat" min="1" max="7" value="3" ng-model="profil.numberSeat">
+                  <input type="range" name="numberSeat" min="1" max="7" value="3" ng-Required="true" ng-model="profil.numberSeat">
                   <i class="icon ion-model-s"></i>
                 </div>
               </div>
             <div class="row">
               <div class="input-field col s12">
                 <i class="mdi-communication-quick-contacts-mail prefix"></i>
-                <input id="mail" type="email" class="validate" ng-model="profil.mail">
+                <input id="mail" type="email" class="validate" ng-Required="true" ng-model="profil.mail">
                 <label for="mail">Email</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
                 <i class="mdi-device-screen-lock-portrait prefix"></i>
-                <input id="password" type="password" class="validate" ng-model="profil.password">
+                <input id="password" type="password" class="validate" ng-Required="true" ng-model="profil.password">
                 <label for="password">Mot de passe</label>
               </div>
             </div>
