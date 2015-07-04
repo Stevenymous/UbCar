@@ -1,10 +1,10 @@
 <ion-view view-title="Profil">
   <ion-content>
-<span ng-if="profil.userCreated == 1">
-    <button class="btn-large waves-effect waves-light green accent-3" ng-click="modalProfilAdd()">
-      <i class="mdi-social-person-add"></i>
-    </button>
-</span>
+  <span ng-if="profil.userCreated == 1">
+      <button class="btn-large waves-effect waves-light green accent-3" ng-click="modalProfilAdd()">
+        <i class="mdi-social-person-add"></i>
+      </button>
+  </span>
 
     <button class="btn-large waves-effect waves-light grey darken-1" ng-click="modalProfilModify()">
       <i class="mdi-content-create"></i>
@@ -33,6 +33,7 @@
     <button class="btn-large waves-effect waves-light teal darken-2" ng-click="takePicture()">
       <i class="mdi-social-party-mode"></i>
     </button>
+    <img ng-src="{{profil.photo}}" style="max-width: 100%">
 
     <div id="divFicheProfil">
       <div class="row">
@@ -59,8 +60,30 @@
     <div id="titreRubrique">
       <div class="row">
         <i class="mdi-action-wallet-travel"></i>
-        <div class="col col-100">Trajet réservés :</div>
+        <div class="col col-100">Trajets réservés :</div>
     </div>
+
+    <ion-list>
+      <ion-item ng-repeat="trajets in profil.trajets | orderBy:'startDate'" href="#/app/trajets/{{trajets.id}}">
+        <i class="mdi-maps-place prefix green accent-3"></i>
+        {{trajets.startCity}}
+        <i class="mdi-navigation-arrow-forward prefix"></i>
+        <i class="mdi-maps-place prefix orange accent-4"></i>        
+        {{trajets.arrivalCity}}
+        <i class="mdi-action-today prefix left">
+        {{trajets.startDate | date:'yyyy-MM-dd'}}
+        </i>
+        <i class="mdi-action-perm-contact-cal prefix right">
+        {{trajets.numberSeat}}
+        <ng-pluralize count="trajets.numberSeat"
+                      when="{'one': 'place restante','other': 'places restantes'}">
+        </ng-pluralize>
+        </i>
+        <li class="animate-repeat" ng-if="results.length == 0">
+          <strong>Aucun trajet réservés pour le moment...</strong>
+        </li>
+      </ion-item>
+    </ion-list>
     
   </ion-content>
 </ion-view>

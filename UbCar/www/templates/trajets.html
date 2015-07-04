@@ -1,7 +1,7 @@
 <ion-view view-title="Trajets">
   <ion-content>
     <ion-list>
-      <ion-item ng-repeat="trajet in trajets | orderBy:'startDate'" href="#/app/trajets/{{trajet.startCity}}/{{trajet.arrivalCity}}/{{trajet.startDate}}">
+      <ion-item ng-repeat="trajet in trajets | orderBy:'startDate'" href="#/app/trajets/{{trajet.id}}">
         <i class="mdi-maps-place prefix green accent-3"></i>
         {{trajet.startCity}}
         <i class="mdi-navigation-arrow-forward prefix"></i>

@@ -1,10 +1,8 @@
-//var urlApi = 'http://localhost:1337/';
-//$http.get(urlApi + 'user/zefef63200@gmail.com/caca')
 var urlApi = 'http://ubcarbackend.herokuapp.com/';
 var profil = 'undefined';
 
 
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ['ui.router'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $localstorage, $http, $location) {
   $scope.loginData = {};
@@ -25,23 +23,16 @@ angular.module('starter.controllers', [])
 
   $scope.doLogin = function() {
       profil = $localstorage.getObject('profil');
-      console.log('profil[0] doLogin', profil[0]);
-      console.log('profil doLogin', profil);
 
     if(typeof profil[0] == 'undefined') {    
       if(typeof $scope.loginData.email != 'undefined' && typeof $scope.loginData.password != 'undefined') {    
         $http.get(urlApi + 'user' + '?mail=' + $scope.loginData.email + '&password=' + $scope.loginData.password)
           .success(function(data, status, headers, config) {
-            console.log('login response');
-            console.log(data);
             if(data != ""){
               $localstorage.setObject('profil', data);
-              console.log('data profil', profil);
               $localstorage.set('email', $scope.loginData.email);
               $scope.modal.hide();
               $location.path("/app/profil");
-              console.log('profil[0] doLoginSucess', profil[0]);
-              console.log('profil doLoginSucess', profil);
             }
             else {
               var alertPopup = $ionicPopup.alert({
@@ -51,7 +42,6 @@ angular.module('starter.controllers', [])
             }
           })
           .error(function(data, status, headers, config){
-            console.log('data error ' + status);
             var alertPopup = $ionicPopup.alert({
               title: 'Ooooops!',
               template: 'Votre profil n\'a pas été trouvé, veuillez réesayer.'
@@ -73,31 +63,27 @@ angular.module('starter.controllers', [])
     }
   };
 
-//Met la valeur de session à vide
+//Met les valeurs de session à vide et ferme l'application
   $scope.logOut = function() {   
     $localstorage.set('email', '');
     $localstorage.set('profil', '');
-    console.log('localstorage logOUT email', $localstorage.get('email'));
-    console.log('localstorage profil', $localstorage.get('profil'));
+    ionic.Platform.exitApp();
+    if(navigator.app){
+        navigator.app.exitApp();
+    }else if(navigator.device){
+            navigator.device.exitApp();
+    }
   }
-
 })
 
-.controller('ProfilCtrl', function($scope, $ionicModal, $timeout, $ionicPopup, $localstorage, $http) {
+.controller('ProfilCtrl', function($scope, $ionicModal, $timeout, $ionicPopup, $localstorage, $http, $state, Camera) {
   profil = $localstorage.getObject('profil');
-  console.log('profil[0] ProfilCtrl', profil[0]);
   $scope.profil = {};
 
-  if( typeof profil[0] != 'undefined' ) {    
-    $scope.profil.userCreated = 0;
-    $scope.profil.name = profil[0].name;
-    $scope.profil.lastName = profil[0].lastName;
-    $scope.profil.city = profil[0].city;
-    $scope.profil.numberSeat = profil[0].numberSeat;
-    $scope.profil.mail = profil[0].mail;
+  if( typeof profil[0] != 'undefined' ) {   
+    $scope.profil = profil[0];
   }
   else {
-    console.log('objet profil vide');
     var confirmPopup = $ionicPopup.confirm({
       title: 'Profil non renseigné',
       template: 'Voulez-vous créer votre profil?',
@@ -128,8 +114,6 @@ angular.module('starter.controllers', [])
   };
 
   $scope.addProfil = function() {
-    console.log('add profil', $scope.profil);
-
     if( typeof $scope.profil.mail != 'undefined' && typeof $scope.profil.password != 'undefined' &&
         typeof $scope.profil.lastName != 'undefined' && typeof $scope.profil.city != 'undefined' &&
         typeof $scope.profil.name != 'undefined' ) {    
@@ -141,15 +125,11 @@ angular.module('starter.controllers', [])
                         + '&mail=' + $scope.profil.mail
                         + '&password=' + $scope.profil.password )
         .success(function(data, status, headers, config) {
-          console.log('login response');
-          console.log(data);
           $localstorage.setObject('profil', data);
           $localstorage.set('email', $scope.profil.email);
           $scope.modal.hide();
         })
         .error(function(data, status, headers, config){
-          console.log('data error ' + status, data);
-          console.log('objet ' , $scope.profil, $scope.profil.email);
           var alertPopup = $ionicPopup.alert({
             title: 'Ooooops!',
             template: 'Votre profil n\'a pas pus être crée, veuillez réesayer.'
@@ -187,17 +167,16 @@ angular.module('starter.controllers', [])
   }
 
   $scope.modfierProfil = function() {
-    console.log('modify response');
-  
     $http.put(urlApi + 'user/' + profil[0].id, 
       {
         lastName : $scope.profil.lastName,
         name : $scope.profil.name,
         city : $scope.profil.city,
-        numberSeat : $scope.profil.numberSeat
+        numberSeat : $scope.profil.numberSeat,
+        mail : $scope.profil.mail,
+        password : $scope.profil.password
       })
       .success(function(data, status, headers, config) {
-        console.log(data, status, headers, config);
         $localstorage.setObject('profil', data);
         profil[0].name = $scope.profil.name;
         profil[0].lastName = $scope.profil.lastName;
@@ -205,8 +184,6 @@ angular.module('starter.controllers', [])
         profil[0].numberSeat = $scope.profil.numberSeat;
         profil[0].mail = $scope.profil.mail;
         $scope.modalModify.hide();
-        console.log('profil[0] modfierProfil', profil[0]);
-
       })
       .error(function(data, status, headers, config){
         var alertPopup = $ionicPopup.alert({
@@ -215,7 +192,6 @@ angular.module('starter.controllers', [])
         });
       })
   };
-
 
   $scope.modalProfilDelete = function() {
     var confirmPopup = $ionicPopup.confirm({
@@ -232,27 +208,16 @@ angular.module('starter.controllers', [])
         text: '<b>Je le veux!</b>',
         type: 'button-positive',
         onTap: function(event) {
-          console.log('You are sure');
-          console.log('$scope.profil', $scope.profil);
-          console.log('profil[0]', profil[0]);
-
           $http.delete(urlApi + 'user', 
             {
               id: profil[0].id
             })
             .success(function(data, status, headers, config) {
-              console.log('delete user', data, status, headers, config);
               $localstorage.set('profil', '');
               $localstorage.set('email', '');
               $scope.modalModify.hide();
               $scope.profil = {};
               $scope.profil.userCreated = 0;
-
-
-              console.log('localstorage delete user email', $localstorage.get('email'));
-              console.log('localstorage delete user profil', $localstorage.get('profil'));
-              console.log('$scope.profil delete user', $scope.profil);
-
             })
             .error(function(data, status, headers, config){
               var alertPopup = $ionicPopup.alert({
@@ -265,30 +230,53 @@ angular.module('starter.controllers', [])
      })
   };
 
-
   //Partie camera
-  $scope.takePicture = function(position) {
-    navigator.camera.getPicture(onSuccess, onFail, { quality: 50,
-        destinationType: Camera.DestinationType.DATA_URL
+  $scope.takePicture = function() {
+    Camera.getPicture({
+      quality: 75,
+      targetWidth: 320,
+      targetHeight: 320,
+      saveToPhotoAlbum: false
+    }).then(function(imageURI) {
+      $scope.photo = imageURI;
+    }, function(err) {
     });
-    
-    function onSuccess(imageData) {
-        var image = document.getElementById('myImage');
-        image.src = "data:image/jpeg;base64," + imageData;
-    }
-    
-    function onFail(message) {
-      var alertPopup = $ionicPopup.alert({
-        title: 'Ooooops!',
-        template: 'Une erreur est survenue'
-      });
-    }
   }
+
+//  $scope.takePicture = function(position) {
+//    navigator.camera.getPicture(onSuccess, onFail, { quality: 50,
+//        destinationType: Camera.DestinationType.DATA_URL
+//    });
+//    
+//    function onSuccess(imageData) {
+//        var image = document.getElementById('myImage');
+//        image.src = "data:image/jpeg;base64," + imageData;
+//    }
+//    
+//    function onFail(message) {
+//      var alertPopup = $ionicPopup.alert({
+//        title: 'Ooooops!',
+//        template: 'Une erreur est survenue'
+//      });
+//    }
+//  }
   
 })
 
-.controller('SearchCtrl', function($scope, $stateParams) {
+.controller('SearchCtrl', function($scope, $stateParams, $http, $ionicPopup, $state) {
     $scope.searchtrajet = {};
+    //Récupération des villes déjà enregistrées pour l'auto-complete des inputs
+    $http.get(urlApi + 'trajets')
+      .success(function(data, status, headers, config){
+        $scope.searchtrajet = [];
+        for(var i = 0; i < data.trajets.length; i ++){          
+          $scope.searchtrajet.push(data.trajets[i]);
+        }
+      })
+      .error(function(data, status, headers, config){
+      })
+
+    $scope.searchtrajet.depart = null;
 
     $scope.geolocalisation = function(position) {
 
@@ -306,7 +294,7 @@ angular.module('starter.controllers', [])
             if (status == google.maps.GeocoderStatus.OK) {
               if (results[1]) {
                 var villeDepart = results[1].formatted_address;
-                $scope.searchtrajet.depart = villeDepart; //N'est pas passé à la vue du premier coup RIP! (problème d'appel asynchrone)
+                $scope.searchtrajet.depart = villeDepart; //problème d'appel asynchrone
               } else {
                 var alertPopup1 = $ionicPopup.alert({
                   title: 'Ooooops!',
@@ -316,7 +304,7 @@ angular.module('starter.controllers', [])
             } else {
               var alertPopup2 = $ionicPopup.alert({
                   title: 'Ooooops!',
-                  template: 'Geocoder a eu un problème d\'éxecution'
+                  template: 'Géocoder a eu un problème d\'éxecution'
                 });
             }
           });
@@ -329,13 +317,31 @@ angular.module('starter.controllers', [])
           });
         };
     };
+//teste fonctionnel avec Diou / Riom / 2015-07-15
+    $scope.searchTrajet = function() {
+      var dateFormat = $scope.searchtrajet.date.toLocaleDateString();
+
+      $http.get(urlApi + 'trajet' 
+                       + '?startCity='+ $scope.searchtrajet.depart
+                       + '&arrivalCity=' + $scope.searchtrajet.arrivee
+                       + '&startDate=' + dateFormat)
+        .success(function(data, status, headers, config){
+          $state.go('app.profil');
+          $state.go("app.trajet",{'id': data.trajet[0].id});
+        })
+        .error(function(data, status, headers, config){
+          var alertPopup = $ionicPopup.alert({
+            title: 'Ooooops!',
+            template: 'Le service de recherche est indisponible pour le moment.'
+          });
+        } )
+    }   
    
 })
 
 
-.controller('AddTrajetCtrl', function($scope, $stateParams, $localstorage, $ionicPopup, $http) {
+.controller('AddTrajetCtrl', function($scope, $stateParams, $localstorage, $ionicPopup, $http, $state) {
   $scope.addtrajet = {};
-  console.log('localstorage addtrajet', $localstorage.get('email'));
 
   $scope.addTrajet = function() {
     if(!$localstorage.get('email')) {
@@ -345,24 +351,37 @@ angular.module('starter.controllers', [])
       });
     }
     else {
-      console.log('$scope.addtrajet', $scope.addtrajet);
-      console.log('$scope.addtrajet.startCity', $scope.addtrajet.startCity);
+      var dateFormat = $scope.addtrajet.startDate.toLocaleDateString();
 
       $http.post(urlApi + 'trajet',
       {
         startCity : $scope.addtrajet.startCity,
         arrivalCity : $scope.addtrajet.arrivalCity,
-        startDate : $scope.addtrajet.startDate,
+        startDate : dateFormat,
         numberSeat : $scope.addtrajet.numberSeat,
         details : $scope.addtrajet.details
       })
       .success(function(data, status, headers, config){
-        console.log('addtrajet success', data);
-        //$scope.trajet = data;
-        //console.log('$scope.trajet', $scope.trajet);
+        var confirmPopup = $ionicPopup.confirm({
+          title: 'Trajet ajouté =)',
+          template: 'Voulez-vous retourner sur votre profil?',
+          cssClass: '.popup-container',
+          buttons: [{ 
+            text: 'Plus tard',
+            onTap: function(event) {
+              confirmPopup.close();
+            } 
+          },
+          {
+            text: '<b>Bien sûr!</b>',
+            type: 'button-positive',
+            onTap: function(event) {
+              $state.go('app.profil');
+            } 
+          }]
+        })
       })
       .error(function(data, status, headers, config){
-        console.log('addtrajet error ' + status, headers, config);
         var alertPopup = $ionicPopup.alert({
           title: 'Ooooops!',
           template: 'Un problème est survenue lors de la création, veuillez réesayer. Excusez nous pour la gène occasionée...'
@@ -374,18 +393,14 @@ angular.module('starter.controllers', [])
 })
 
 .controller('TrajetsCtrl', function($scope, $http) {
-  console.log('TrajetsCtrl');
-
-  $http.get(urlApi + 'trajet')
+  $http.get(urlApi + 'trajets')
       .success(function(data, status, headers, config){
-        console.log('TrajetsCtrl success', data);
         $scope.trajets = [];
         for(var i = 0; i < data.trajets.length; i ++){          
           $scope.trajets.push(data.trajets[i]);
         }
       })
       .error(function(data, status, headers, config){
-        console.log('TrajetsCtrl error ' + status, headers, config);
         var alertPopup = $ionicPopup.alert({
           title: 'Ooooops!',
           template: 'Les trajets sont indisponibles pour le moment.'
@@ -393,70 +408,150 @@ angular.module('starter.controllers', [])
       })
 })
 
-.controller('TrajetCtrl', function($scope, $stateParams, $http) {
-  console.log('TrajetCtrl', $stateParams );
-
-  $http.get(urlApi + 'trajet',
-  {
-    startCity : $stateParams.startCity,
-    arrivalCity : $stateParams.arrivalCity,
-    startDate : $stateParams.startDate
-  })
-  .success(function(data, status, headers, config){
-    console.log('TrajetCtrl success', data);
-    $scope.trajet = data;
-    console.log('$scope.trajet', $scope.trajet);
-  })
-  .error(function(data, status, headers, config){
-    console.log('TrajetCtrl error ' + status, headers, config);
-    var alertPopup = $ionicPopup.alert({
-      title: 'Ooooops!',
-      template: 'Le détail du trajet n\'a pas été trouvé, veuillez réesayer.'
-    });
-  })
-
-  $scope.subscribe = function() {
-    console.log('subscribe');
-
-  /*  $http.put(urlApi + 'user/' + profil[0].id + '/subscribeTrajet/trajet/' + trajet.id)
-      .success(function(data, status, headers, config) {
-        console.log(data, status, headers, config);
-        $localstorage.setObject('profil', data);
-        profil[0].name = $scope.profil.name;
-        profil[0].lastName = $scope.profil.lastName;
-        profil[0].city = $scope.profil.city;
-        profil[0].numberSeat = $scope.profil.numberSeat;
-        profil[0].mail = $scope.profil.mail;
-        $scope.modalModify.hide();
-        console.log('profil[0] modfierProfil', profil[0]);
-
+.controller('TrajetCtrl', function($scope, $stateParams, $http, $ionicPopup, $localstorage, $state) {
+  if(typeof $stateParams.startCity != 'undefined') {  
+    $http.get(urlApi + 'trajet',
+    {
+      startCity : $stateParams.startCity,
+      arrivalCity : $stateParams.arrivalCity,
+      startDate : $stateParams.startDate
+    })
+    .success(function(data, status, headers, config){
+      $scope.trajet = data;
+    })
+    .error(function(data, status, headers, config){
+      var alertPopup = $ionicPopup.alert({
+        title: 'Ooooops!',
+        template: 'La liste des trajets n\'a pas été trouvé, veuillez réesayer.'
+      });
+    })
+  }
+  else {
+    $http.get(urlApi + 'trajetById?id=' + $stateParams.id)
+      .success(function(data, status, headers, config){
+        $scope.trajet = data.trajet;
       })
       .error(function(data, status, headers, config){
         var alertPopup = $ionicPopup.alert({
           title: 'Ooooops!',
-          template: 'Votre profil n\'a pas pus être modifié, veuillez réesayer.'
+          template: 'Le détail du trajet n\'a pas été trouvé, veuillez réesayer.'
         });
-      })*/
+      })
+  }
+
+  $scope.subscribe = function() {
+    profil = $localstorage.getObject('profil');
+    $http.put(urlApi + 'user/' + profil[0].id + '/subscribeTrajet/trajet/' + $scope.trajet.id)
+      .success(function(data, status, headers, config) {
+        $http.get(urlApi + 'user' + '?mail=' + profil[0].mail + '&password=' + profil[0].password)
+          .success(function(data, status, headers, config) {
+            if(data != ""){
+              $localstorage.setObject('profil', data);
+              profil = $localstorage.getObject('profil');
+            }
+            else {
+              var alertPopup = $ionicPopup.alert({
+                title: 'Ooooops!',
+                template: 'Votre profil n\'a pas été trouvé, veuillez réesayer.'
+              });
+            }
+          })
+          .error(function(data, status, headers, config){
+            var alertPopup = $ionicPopup.alert({
+              title: 'Ooooops!',
+              template: 'Votre profil n\'a pas été trouvé, veuillez réesayer.'
+            });
+          })
+
+        var confirmPopup = $ionicPopup.confirm({
+          title: 'Inscription réussie =)',
+          template: 'Voulez-vous voir vos trajets réservés sur votre profil?',
+          cssClass: '.popup-container',
+          buttons: [{ 
+            text: 'Plus tard',
+            onTap: function(event) {
+              confirmPopup.close();
+            } 
+          },
+          {
+            text: '<b>Bien sûr!</b>',
+            type: 'button-positive',
+            onTap: function(event) {
+              $state.go('app.profil');
+            } 
+          }]
+        })
+      })
+      .error(function(data, status, headers, config){
+        var alertPopup = $ionicPopup.alert({
+          title: 'Ooooops!',
+          template: 'Vous n\'avez pas été inscrit, veuillez réesayer.'
+        });
+      })
   }
 
   $scope.unsubscribe = function() {
-    console.log('unsubscribe');
+    profil = $localstorage.getObject('profil');
+    $http.put(urlApi + 'user/' + profil[0].id + '/unsubscribeTrajet/trajet/' + $scope.trajet.id)
+      .success(function(data, status, headers, config) {
+        $http.get(urlApi + 'user' + '?mail=' + profil[0].mail + '&password=' + profil[0].password)
+          .success(function(data, status, headers, config) {
+            if(data != ""){
+              $localstorage.setObject('profil', data);
+              profil = $localstorage.getObject('profil');
+            }
+            else {
+              var alertPopup = $ionicPopup.alert({
+                title: 'Ooooops!',
+                template: 'Votre profil n\'a pas été trouvé, veuillez réesayer.'
+              });
+            }
+          })
+          .error(function(data, status, headers, config){
+            var alertPopup = $ionicPopup.alert({
+              title: 'Ooooops!',
+              template: 'Votre profil n\'a pas été trouvé, veuillez réesayer.'
+            });
+          })
+
+        var confirmPopup = $ionicPopup.confirm({
+          title: 'Désinscription réussie =)',
+          template: 'Voulez-vous voir vos trajets restant réservés sur votre profil?',
+          cssClass: '.popup-container',
+          buttons: [{ 
+            text: 'Plus tard',
+            onTap: function(event) {
+              confirmPopup.close();
+            } 
+          },
+          {
+            text: '<b>Bien sûr!</b>',
+            type: 'button-positive',
+            onTap: function(event) {
+              $state.go('app.profil');
+            } 
+          }]
+        })
+      })
+      .error(function(data, status, headers, config){
+        var alertPopup = $ionicPopup.alert({
+          title: 'Ooooops!',
+          template: 'Vous n\'avez pas été inscrit, veuillez réesayer.'
+        });
+      })
   }
+
 })
 
 .controller('UsersCtrl', function($scope, $http, $stateParams) {
-  console.log('UsersCtrl');
-
   $http.get(urlApi + 'user')
       .success(function(data, status, headers, config){
-        console.log('UsersCtrl success', data);
         $scope.users = [];
         for(var i = 0; i < data.length; i ++){          
           $scope.users.push(data[i]);
         }
       })
       .error(function(data, status, headers, config){
-        console.log('UsersCtrl error ' + status, headers, config);
         var alertPopup = $ionicPopup.alert({
           title: 'Ooooops!',
           template: 'Les utilisateurs sont indisponibles pour le moment.'
@@ -466,4 +561,3 @@ angular.module('starter.controllers', [])
 
 .controller('UserCtrl', function($scope, $stateParams) {
  })
-

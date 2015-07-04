@@ -74,7 +74,7 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
 
 //Détail du trajet
   .state('app.trajet', {
-    url: "/trajets/:startCity/:arrivalCity/:startDate",
+    url: "/trajets/:id",
     views: {
       'menuContent' :{
         templateUrl: "templates/trajet.html",
@@ -93,7 +93,7 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
       }
     }
   })
-
+//Détail d'un utilisateur
   .state('app.user', {
     url: "/users/:userID",
     views: {
