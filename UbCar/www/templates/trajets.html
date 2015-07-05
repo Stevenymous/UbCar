@@ -11,9 +11,9 @@
         {{trajet.startDate | date:'yyyy-MM-dd'}}
         </i>
         <i class="mdi-action-perm-contact-cal prefix right">
-        {{trajet.numberSeat}}
-        <ng-pluralize count="trajet.numberSeat"
-                      when="{'one': 'place','other': 'places'}">
+        {{trajet.numberSeatReminder}}
+        <ng-pluralize count="trajet.numberSeatReminder"
+                      when="{'0': 'place', '1': 'place','other': 'places'}">
         </ng-pluralize>
         </i>
         <li class="animate-repeat" ng-if="results.length == 0">

@@ -22,7 +22,7 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
     controller: 'AppCtrl'
   })
 
-//Page d'accueil
+//Welcome page
   .state('app.welcome', {
     url: "/welcome",
     views: {
@@ -31,7 +31,7 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
       }
     }
   })
-//Profil : consultation et ajout
+//Profile : view, create, modify and delete
   .state('app.profil', {
     url: "/profil",
     views: {
@@ -41,7 +41,7 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
       }
     }
   })
-//Rechercher un trajet
+//Search a ride
   .state('app.search', {
     url: "/search",
     views: {
@@ -51,7 +51,7 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
       }
     }
   })
-//Ajouter un trajet
+//Add a ride
   .state('app.addTrajet', {
     url: "/addTrajet",
     views: {
@@ -61,7 +61,7 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
       }
     }
   })
-//Liste des trajets disponibles
+//Rides list
   .state('app.trajets', {
     url: "/trajets",
     views: {
@@ -72,7 +72,7 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
     }
   })
 
-//Détail du trajet
+//Ride detail
   .state('app.trajet', {
     url: "/trajets/:id",
     views: {
@@ -83,7 +83,7 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
     }
   })
 
-//Liste des utilisateurs  
+//Users list 
  .state('app.users', {
     url: "/users",
     views: {
@@ -93,7 +93,7 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
       }
     }
   })
-//Détail d'un utilisateur
+//User detail
   .state('app.user', {
     url: "/users/:userID",
     views: {
@@ -104,7 +104,7 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
     }
   })
 
-//Documentation de l'application
+//User manual
   .state('app.documentation', {
     url: "/documentation",
     views: {
@@ -114,6 +114,6 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
     }
   })
 
-  // Page d'accueil par défaut
+  //Default welcome page
   $urlRouterProvider.otherwise('/app/welcome');
 });

@@ -16,10 +16,10 @@
           <input type="date" placeholder=" Date" ng-Required="true" ng-model="addtrajet.startDate">
         </label>
         <div class="nbPlace">
-          <label id="labelNbPlace">Nombre de place : {{addtrajet.numberSeat}}</label>
+          <label id="labelNbPlace">Nombre de place : {{addtrajet.numberSeatTotal}}</label>
           <div class="item range range-positive">
             <i class="icon ion-android-car"></i>
-            <input type="range" name="nombrePlace" min="1" max="7" value="3" ng-model="addtrajet.numberSeat">
+            <input type="range" name="nombrePlace" min="1" max="7" value="3" ng-model="addtrajet.numberSeatTotal">
             <i class="icon ion-model-s"></i>
           </div>
         </div>

@@ -45,7 +45,8 @@
         <i class="icon ion-model-s"></i>
         <div class="col col-100">Voiture à {{profil.numberSeat}}
           <ng-pluralize count="profil.numberSeat"
-                when="{'one': 'place',
+                when="{'0': 'place',
+                       'one': 'place',
                        'other': 'places'}">
           </ng-pluralize>
         </div>
@@ -74,9 +75,9 @@
         {{trajets.startDate | date:'yyyy-MM-dd'}}
         </i>
         <i class="mdi-action-perm-contact-cal prefix right">
-        {{trajets.numberSeat}}
-        <ng-pluralize count="trajets.numberSeat"
-                      when="{'one': 'place restante','other': 'places restantes'}">
+        {{trajets.numberSeatReminder}}
+        <ng-pluralize count="trajets.numberSeatReminder"
+                      when="{'0': 'place', 'one': 'place restante','other': 'places restantes'}">
         </ng-pluralize>
         </i>
         <li class="animate-repeat" ng-if="results.length == 0">

@@ -1,9 +1,11 @@
 var urlApi = 'http://ubcarbackend.herokuapp.com/';
 var profil = 'undefined';
 
-
 angular.module('starter.controllers', ['ui.router'])
-
+/************************************************************************************************************************
+* Authentication controller
+* Login / Logout / Initialize localstorage
+************************************************************************************************************************/
 .controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $localstorage, $http, $location) {
   $scope.loginData = {};
 
@@ -63,7 +65,7 @@ angular.module('starter.controllers', ['ui.router'])
     }
   };
 
-//Met les valeurs de session à vide et ferme l'application
+//Set localstorage empty and shutdonw the app
   $scope.logOut = function() {   
     $localstorage.set('email', '');
     $localstorage.set('profil', '');
@@ -76,6 +78,12 @@ angular.module('starter.controllers', ['ui.router'])
   }
 })
 
+/************************************************************************************************************************
+* Profile controller
+* Create / Modify / View / delete profil
+* Rides subscribe list
+* With : Cordova camera plugin for profile picture
+************************************************************************************************************************/
 .controller('ProfilCtrl', function($scope, $ionicModal, $timeout, $ionicPopup, $localstorage, $http, $state, Camera) {
   profil = $localstorage.getObject('profil');
   $scope.profil = {};
@@ -230,7 +238,6 @@ angular.module('starter.controllers', ['ui.router'])
      })
   };
 
-  //Partie camera
   $scope.takePicture = function() {
     Camera.getPicture({
       quality: 75,
@@ -263,9 +270,14 @@ angular.module('starter.controllers', ['ui.router'])
   
 })
 
+/************************************************************************************************************************
+* Ride search controller
+* Search a ride by startCity, arrivalCity and startDate
+* With : Cordova geolocation plugin and Geocoder API
+************************************************************************************************************************/
 .controller('SearchCtrl', function($scope, $stateParams, $http, $ionicPopup, $state) {
     $scope.searchtrajet = {};
-    //Récupération des villes déjà enregistrées pour l'auto-complete des inputs
+    //Get cities already save for input auto-complete
     $http.get(urlApi + 'trajets')
       .success(function(data, status, headers, config){
         $scope.searchtrajet = [];
@@ -275,7 +287,6 @@ angular.module('starter.controllers', ['ui.router'])
       })
       .error(function(data, status, headers, config){
       })
-
     $scope.searchtrajet.depart = null;
 
     $scope.geolocalisation = function(position) {
@@ -294,7 +305,7 @@ angular.module('starter.controllers', ['ui.router'])
             if (status == google.maps.GeocoderStatus.OK) {
               if (results[1]) {
                 var villeDepart = results[1].formatted_address;
-                $scope.searchtrajet.depart = villeDepart; //problème d'appel asynchrone
+                $scope.searchtrajet.depart = villeDepart; //asynchrone problem
               } else {
                 var alertPopup1 = $ionicPopup.alert({
                   title: 'Ooooops!',
@@ -317,7 +328,7 @@ angular.module('starter.controllers', ['ui.router'])
           });
         };
     };
-//teste fonctionnel avec Diou / Riom / 2015-07-15
+
     $scope.searchTrajet = function() {
       var dateFormat = $scope.searchtrajet.date.toLocaleDateString();
 
@@ -339,7 +350,9 @@ angular.module('starter.controllers', ['ui.router'])
    
 })
 
-
+/************************************************************************************************************************
+* Add ride controller
+************************************************************************************************************************/
 .controller('AddTrajetCtrl', function($scope, $stateParams, $localstorage, $ionicPopup, $http, $state) {
   $scope.addtrajet = {};
 
@@ -358,7 +371,8 @@ angular.module('starter.controllers', ['ui.router'])
         startCity : $scope.addtrajet.startCity,
         arrivalCity : $scope.addtrajet.arrivalCity,
         startDate : dateFormat,
-        numberSeat : $scope.addtrajet.numberSeat,
+        numberSeatTotal : $scope.addtrajet.numberSeatTotal,
+        numberSeatReminder : $scope.addtrajet.numberSeatTotal,
         details : $scope.addtrajet.details
       })
       .success(function(data, status, headers, config){
@@ -392,6 +406,10 @@ angular.module('starter.controllers', ['ui.router'])
   }
 })
 
+/************************************************************************************************************************
+* Ride list controller
+* list all rides even those which have no(zero) seat
+************************************************************************************************************************/
 .controller('TrajetsCtrl', function($scope, $http) {
   $http.get(urlApi + 'trajets')
       .success(function(data, status, headers, config){
@@ -408,6 +426,10 @@ angular.module('starter.controllers', ['ui.router'])
       })
 })
 
+/************************************************************************************************************************
+* Ride controller
+* ride detail / ride subscribe / ride unsubscribe
+************************************************************************************************************************/
 .controller('TrajetCtrl', function($scope, $stateParams, $http, $ionicPopup, $localstorage, $state) {
   if(typeof $stateParams.startCity != 'undefined') {  
     $http.get(urlApi + 'trajet',
@@ -483,10 +505,19 @@ angular.module('starter.controllers', ['ui.router'])
         })
       })
       .error(function(data, status, headers, config){
-        var alertPopup = $ionicPopup.alert({
-          title: 'Ooooops!',
-          template: 'Vous n\'avez pas été inscrit, veuillez réesayer.'
-        });
+        if(status == 404 && data.message.search("Trajet it's already full") != -1)
+        {
+            var alertPopup = $ionicPopup.alert({
+            title: 'Ooooops!',
+            template: 'Il n\'y a plus de place disponible pour ce trajet, veuillez en choisir un autre.'
+          });
+        }
+        else{
+            var alertPopup = $ionicPopup.alert({
+            title: 'Ooooops!',
+            template: 'Vous n\'avez pas été inscrit, veuillez réesayer.'
+          });
+        }
       })
   }
 
@@ -543,6 +574,10 @@ angular.module('starter.controllers', ['ui.router'])
 
 })
 
+/************************************************************************************************************************
+* Users controller
+* list all user who have a Ubcar account
+************************************************************************************************************************/
 .controller('UsersCtrl', function($scope, $http, $stateParams) {
   $http.get(urlApi + 'user')
       .success(function(data, status, headers, config){
@@ -559,5 +594,9 @@ angular.module('starter.controllers', ['ui.router'])
       })
 })
 
+/************************************************************************************************************************
+* User controller (work in progress)
+* user detail
+************************************************************************************************************************/
 .controller('UserCtrl', function($scope, $stateParams) {
  })
