@@ -1,4 +1,5 @@
 # UbCar
 
-Front end via materialize et ionic
-Back end via sails et retour json pour le web service
+Front end réalisé avec materialize et ionic.
+
+Back end réalisé avec sails et retour json pour le web service.
